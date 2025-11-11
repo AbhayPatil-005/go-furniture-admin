@@ -23,7 +23,7 @@ const HomePage = () => {
                 <Col xs={12} md={3} lg={2} className="bg-dark text-white p-3 d-flex flex-column ">
                     <SideBar />
 
-                    <Button variant="outline-danger" className="w-100 mt-auto" onClick={handleLogout}>
+                    <Button variant="outline-danger" className="w-100 " onClick={handleLogout}>
                         Logout
                     </Button>
                 </Col>

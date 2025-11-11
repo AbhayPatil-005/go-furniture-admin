@@ -1,7 +1,8 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Form, Button, Card, Spinner, Toast, ToastContainer } from "react-bootstrap";
 
-const ProductForm = ({ onProductAdded }) => {
+
+const ProductForm = ({ onProductAdded, onProductUpdated, onClose, product  }) => {
     const [loading, setLoading] = useState(false);
     const [toast, setToast] = useState({ show: false, message: "", variant: "", textColor: "" });
     const BASE_URL = import.meta.env.VITE_FIREBASE_BASE_URL;
@@ -14,49 +15,75 @@ const ProductForm = ({ onProductAdded }) => {
         description: "",
         imageUrl: "",
     });
+    useEffect(() => {
+        if (product) {
+            setFormData({
+                name: product.name || "", 
+                description: product.description || "",
+                price: product.price || "",
+                quantity: product.quantity || "",
+                category: product.category || "",
+                imageUrl: product.imageUrl || "",
+            });
+        }
+    }, [product]);
+
 
     const handleSubmit = async (e) => {
         e.preventDefault();
         setLoading(true);
         try {
-            const res = await fetch(`${BASE_URL}/products.json`, {
-                method: "POST",
+            const url = product
+                ? `${BASE_URL}/products/${product.id}.json`
+                : `${BASE_URL}/products.json`;
+
+            const method = product ? "PATCH" : "POST";
+
+            const res = await fetch(url, {
+                method,
                 headers: { "Content-Type": "application/json" },
                 body: JSON.stringify(formData),
             });
 
-            if (!res.ok) throw new Error("Failed to add product");
+            if (!res.ok) throw new Error("Failed to save product");
+
             setToast({
                 show: true,
                 variant: "success",
-                message: "✅ Product added successfully!",
+                message: product ? "✅ Product updated successfully!" : "✅ Product added successfully!",
                 textColor: "text-white",
             });
 
-            setFormData({
-                name: "",
-                price: "",
-                category: "",
-                quantity: "",
-                description: "",
-                imageUrl: "",
-            });
-            if (onProductAdded) onProductAdded(); 
+            if (product && onProductUpdated) onProductUpdated();
+            else if (onProductAdded) onProductAdded();
+
+            if (onClose) onClose();
+
+            if (!product) {
+                setFormData({
+                    name: "",
+                    price: "",
+                    category: "",
+                    quantity: "",
+                    description: "",
+                    imageUrl: "",
+                });
+            }
         } catch (error) {
             setToast({
                 show: true,
                 variant: "danger",
-                message: error.message || "Failed to add product",
+                message: error.message || "Failed to save product",
                 textColor: "text-white",
             });
         } finally {
             setLoading(false);
         }
     };
-
+    
     return (
         <>
-            <ToastContainer position="top-right" className="mt-3">
+            <ToastContainer position="top-end" className="mt-1">
                 <Toast
                     bg={toast.variant}
                     show={toast.show}
@@ -67,9 +94,10 @@ const ProductForm = ({ onProductAdded }) => {
                     <Toast.Body className={toast.textColor}>{toast.message}</Toast.Body>
                 </Toast>
             </ToastContainer>
-
-            <Card className="p-4 shadow-sm mb-4">
-                <h5 className="mb-3">Add New Product</h5>
+            <h5 className="mb-3 text-center" >{product ? "Edit Product" : "Add New Product"}</h5>
+            <div className="d-flex justify-content-center">
+            <Card className="p-4 shadow-sm mb-4 " style={{width:"700px"}}>
+                
                 <Form onSubmit={handleSubmit}>
                     <Form.Group className="mb-3">
                         <Form.Label>Product Name</Form.Label>
@@ -136,11 +164,13 @@ const ProductForm = ({ onProductAdded }) => {
                         />
                     </Form.Group>
 
-                    <Button variant="primary" type="submit" disabled={loading}>
-                        {loading ? <Spinner animation="border" size="sm" /> : "Add Product"}
+                    <Button variant="primary" type="submit" className="w-100"disabled={loading}>
+                        {loading ? (<Spinner animation="border" size="sm" />) 
+                        : product ? ( "Update Product") : ("Add Product")}
                     </Button>
                 </Form>
             </Card>
+            </div>
         </>)
 }
 
