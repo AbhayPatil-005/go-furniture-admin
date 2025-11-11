@@ -1,8 +1,10 @@
-
+import ProductForm from "../components/products/ProductForm";
 
 
 const ProductsPage =()=>{
-    return (<></>)
+    return (<>
+        <ProductForm />
+    </>)
 }
 
 export default ProductsPage;
