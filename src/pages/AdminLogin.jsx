@@ -79,7 +79,7 @@ const AdminLogin = () => {
 
     return (
         <>
-            <ToastContainer position="top-center" className="mt-5">
+            <ToastContainer position="top-end" className="mt-5">
                 <Toast
                     className="text-center"
                     bg={toast.variant}
