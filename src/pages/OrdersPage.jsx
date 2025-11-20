@@ -15,12 +15,26 @@ const OrdersPage = () => {
         try {
             const res = await fetch(`${BASE_URL}/orders.json`);
             const data = await res.json();
-            if (data) {
-                const formatted = Object.keys(data).map((key) => ({ id: key, ...data[key] }));
-                setOrders(formatted.reverse());
-            } else {
-                setOrders([])
+            if (!data) {
+                setOrders([]);
+                return;
             }
+            const allOrders = [];
+
+            Object.entries(data).forEach(([userEmail, userOrders])=>{
+                if(userOrders?.newOrders){
+                    Object.entries(userOrders.newOrders).forEach(([orderId, orderData])=>{
+                        allOrders.push({
+                            id:orderId,
+                            userEmail,
+                            ...orderData
+                        });
+                    });
+                }
+            });
+            console.log(allOrders);
+            setOrders(allOrders.reverse());
+
         } catch (error) {
             setToast({
                 show: true,
@@ -40,9 +54,11 @@ const OrdersPage = () => {
     }, [])
 
     //Network call - status update
-    const handleStatusChange = async (id, newStatus) => {
+    const handleStatusChange = async (id, userEmail,  newStatus) => {
+        const safeEmail = userEmail.replace(/\./g, ",");
         try {
-            await fetch(`${BASE_URL}/orders/${id}.json`, {
+            console.log(id, userEmail, newStatus)
+            await fetch(`${BASE_URL}/orders/${safeEmail}/newOrders/${id}.json`, {
                 method: "PATCH",
                 headers: { "Content-Type": "application/json" },
                 body: JSON.stringify({ status: newStatus }),
@@ -105,23 +121,24 @@ const OrdersPage = () => {
                     </thead>
                     <tbody>
                         {orders.map((order, idx) => (
+                            
                             <tr key={order.id}>
                                 <td>{idx + 1}</td>
                                 <td>{order.userEmail}</td>
                                 <td>
-                                    {order.address?.street}, {order.address?.city}, {order.address?.pin}
+                                    {order.address?.street}, {order.address?.city}, {order.address?.pincode}
                                 </td>
-                                <td>₹{order.total}</td>
+                                <td>₹{order.totalAmount}/-</td>
                                 <td>
                                     <Form.Select
-                                        value={order.status || "Order Placed."}
-                                        onChange={(e) => handleStatusChange(order.id, e.target.value)}
+                                        value={order.status || "placed."}
+                                        onChange={(e) => handleStatusChange(order.id, order.userEmail, e.target.value)}
                                         size="sm"
                                     >
-                                        <option>Order Placed</option>
+                                        <option>Placed</option>
                                         <option>Shipped</option>
                                         <option>Delivered</option>
-                                        <option>Canceled</option>
+                                        <option>Cancelled</option>
                                     </Form.Select>
                                 </td>
                                 <td>
@@ -129,7 +146,9 @@ const OrdersPage = () => {
                                         variant="outline-danger"
                                         size="sm"
                                         onClick={async () => {
-                                            await fetch(`${BASE_URL}/orders/${order.id}.json`, { method: "DELETE" });
+                                            
+                                            await fetch(`${BASE_URL}orders/${order.userEmail.replace(/\./g, ",")}/newOrders/${order.id}.json`, { method: "DELETE" })
+                                            .then((err)=>console.log(err));
                                             fetchOrders();
                                         }}
                                     >
