@@ -117,9 +117,13 @@ const ProductForm = ({ onProductAdded, onProductUpdated, onClose, product  }) =>
                             required
                         >
                             <option value="">Select category</option>
-                            <option value="1-door-wardrobe">1 Door Wardrobe</option>
+                            <option value="chairs">Chairs</option>
+                            <option value="sofas">Sofas</option>
+                            <option value="beds">Beds</option>
+                            <option value="wardrobes">Wardrobes</option>
                             <option value="2-door-wardrobe">2 Door Wardrobe</option>
-                            <option value="sliding-wardrobe">Sliding Wardrobe</option>
+                            <option value="benches/tables">Benches/Tables</option>
+
                         </Form.Select>
                     </Form.Group>
 
