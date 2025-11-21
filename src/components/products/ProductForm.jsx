@@ -121,7 +121,6 @@ const ProductForm = ({ onProductAdded, onProductUpdated, onClose, product  }) =>
                             <option value="sofas">Sofas</option>
                             <option value="beds">Beds</option>
                             <option value="wardrobes">Wardrobes</option>
-                            <option value="2-door-wardrobe">2 Door Wardrobe</option>
                             <option value="benches/tables">Benches/Tables</option>
 
                         </Form.Select>
