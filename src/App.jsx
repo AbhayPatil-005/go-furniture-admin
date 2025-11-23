@@ -15,7 +15,8 @@ function App() {
     <Routes>
       <Route path="/admin-login" element={<AdminLogin/>}/>
       <Route path="/home" element={isLoggedIn ? <HomePage/> : <Navigate to="/admin-login" replace/>}>
-        <Route path='products' element={<ProductList/>}/>
+        <Route index element={<ProductList/>}/>
+        <Route path="products" element={<ProductList />} />
         <Route path='add-product' element={<ProductForm/>}/>
         <Route path='orders' element={<OrdersPage/>}/>
         <Route path=''/>

@@ -3,6 +3,7 @@ import { Form, Button, Container, Card, Spinner, Toast, ToastContainer } from "r
 import { useNavigate } from "react-router-dom";
 import { useDispatch } from "react-redux";
 import { login } from "../reduxStore/authSlice";
+import DashboardHeader from "../components/layouts/DashboardHeader";
 
 const AdminLogin = () => {
     
@@ -10,7 +11,6 @@ const AdminLogin = () => {
     const [formData, setFormData] = useState({ email: "", password: "", })
     const [toast, setToast] = useState({ show: false, message: "", variant: "", textColor: "" })
 
-    // handling validation errors
     const errorMap = {
         INVALID_LOGIN_CREDENTIALS: "You have either entered wrong email or wrong password",
         EMAIL_NOT_FOUND: "Email not registered.",
@@ -23,17 +23,14 @@ const AdminLogin = () => {
     const API_KEY = import.meta.env.VITE_FIREBASE_AUTH_API_KEY;
     const ADMIN_EMAIL = import.meta.env.VITE_ADMIN_EMAIL;
 
-    //submit form event
     const handleSubmitEvent = async (e) => {
         e.preventDefault();
-        //validation of admin mail 
         if(formData.email !== ADMIN_EMAIL){
             setToast({ show: true, variant: "danger", message: "Only admin has access", textColor: "text-white" });
             return;
         }
         setLoading(true);
 
-        //Network call
         try {
             const res = await fetch(`https://identitytoolkit.googleapis.com/v1/accounts:signInWithPassword?key=${API_KEY}`, {
                 method: "POST",
@@ -46,7 +43,6 @@ const AdminLogin = () => {
             });
             const data = await res.json();
 
-            //Case: Network failure
             if (!res.ok) {
                 const readError = errorMap[data.error?.message] || "Failed to login, please try again later"
                 setToast({
@@ -54,7 +50,7 @@ const AdminLogin = () => {
                 })
                 throw new Error(data.error.message || "Authentication failed")
             }
-            // run login action
+
             dispatch(login({ token: data.idToken, userId: data.localId, adminEmail: data.email }))
             setToast({
                 show: true,
@@ -64,7 +60,6 @@ const AdminLogin = () => {
             });
             setTimeout(()=>navigate("/home"),1000);
 
-        //Handling any errors
         } catch (error) {
             console.log(error)
             const readError = errorMap[error?.message] || "Failed to login, please try again later"
@@ -91,11 +86,13 @@ const AdminLogin = () => {
                     <Toast.Body className={toast.textColor}>{toast.message}</Toast.Body>
                 </Toast>
             </ToastContainer>
+            <DashboardHeader />
             <Container
                 fluid
-                className="d-flex flex-column justify-content-center align-items-center vh-100 w-100 m-0"
+                className="d-flex flex-column align-items-center vh-100 w-100 m-0"
                 style={{ backgroundColor: "#e8f3ffff" }}
-            >
+            >   
+                <div className=" mt-5">
                 <h3 className="text-center mb-4 fw-semibold text-dark">
                     Welcome Back, please Login!
                 </h3>
@@ -144,6 +141,7 @@ const AdminLogin = () => {
                         </Button>
                     </Form>
                 </Card>
+                </div>
             </Container>
         </>
     )

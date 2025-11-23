@@ -9,11 +9,10 @@ const ProductList = () => {
     const [toast, setToast] = useState({
         show: false, variant: "", message: ""
     });
-    // state requirement for modal
+
     const [selectedProduct, setSelectedProduct] = useState(null);
     const [showModal, setShowModal] = useState(false);
 
-    // Network call - get
     const fetchProducts = async (flag=false) => {
         setLoading(flag);
         try {
@@ -33,7 +32,6 @@ const ProductList = () => {
         }
     };
 
-    //Network call - delete
     const handleDelete = async (id) => {
         try {
             await fetch(`${BASE_URL}/products/${id}.json`, { method: "DELETE" });
@@ -44,7 +42,6 @@ const ProductList = () => {
         }
     };
 
-    // Network call - update
     const handleUpdate = async (id, updatedData) => {
         try {
             await fetch(`${BASE_URL}/products/${id}.json`, {
@@ -59,13 +56,11 @@ const ProductList = () => {
         }
     };
 
-    //show modal
     const handleEdit = (product) => {
         setSelectedProduct(product);
         setShowModal(true);
     };
 
-    //run once at mount
     useEffect(() => {
         fetchProducts(true);
     }, []);

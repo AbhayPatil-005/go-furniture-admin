@@ -9,7 +9,6 @@ const OrdersPage = () => {
     const [loading, setLoading] = useState(false);
     const [toast, setToast] = useState({ show: false, variant: "", message: "", textColor: "" });
 
-    //Network call - fetch data
     const fetchOrders = async (flagLoading = true) => {
         setLoading(flagLoading);
         try {
@@ -48,12 +47,10 @@ const OrdersPage = () => {
         }
     }
 
-    //run once on mount
     useEffect(() => {
         fetchOrders();
     }, [])
 
-    //Network call - status update
     const handleStatusChange = async (id, userEmail,  newStatus) => {
         const safeEmail = userEmail.replace(/\./g, ",");
         try {

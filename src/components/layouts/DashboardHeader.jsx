@@ -9,11 +9,13 @@ const DashboardHeader = () => {
         <Navbar bg="light" className="shadow-sm px-3">
             <Container fluid>
                 <Navbar.Brand className="fw-bold text-dark">
-                    🛠 GoFurniture Admin
+                    <span className="brand-logo">
+                        Go<span className="dot">-</span>Furniture admin
+                    </span>
                 </Navbar.Brand>
-                <div className="text-muted small">
+                {adminEmail && <div className="text-muted">
                     Logged in as <strong>{adminEmail}</strong>
-                </div>
+                </div>}
                 
             </Container>
         </Navbar>

@@ -6,3 +6,17 @@ body,
   padding: 0;
 
 }
+.brand-logo {
+  font-family: "Great Vibes", cursive;
+  font-size: 2.5rem;      
+  font-weight: 500;      
+  letter-spacing: 2px;
+  color: #222;               
+  text-decoration: none;
+  display: inline-block;
+}
+
+.brand-logo span.dot {
+  color: #faa55b;     
+  font-weight: 1000;     
+}

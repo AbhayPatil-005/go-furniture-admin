@@ -50,7 +50,7 @@ const ProductForm = ({ onProductAdded, onProductUpdated, onClose, product  }) =>
             setToast({
                 show: true,
                 variant: "success",
-                message: product ? "✅ Product updated successfully!" : "✅ Product added successfully!",
+                message: product ? "Product updated successfully!" : "Product added successfully!",
                 textColor: "text-white",
             });
 
@@ -121,7 +121,7 @@ const ProductForm = ({ onProductAdded, onProductUpdated, onClose, product  }) =>
                             <option value="sofas">Sofas</option>
                             <option value="beds">Beds</option>
                             <option value="wardrobes">Wardrobes</option>
-                            <option value="benches/tables">Benches/Tables</option>
+                            <option value="benches-tables">Benches/Tables</option>
 
                         </Form.Select>
                     </Form.Group>
